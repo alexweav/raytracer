@@ -2,6 +2,7 @@ use indicatif::{ProgressBar, ProgressStyle};
 use rand::Rng;
 
 use crate::camera::Camera;
+use crate::color::to_color;
 use crate::file_writer::PpmWriter;
 use crate::hittable::Hittable;
 use crate::ray::Ray;
@@ -20,8 +21,10 @@ pub fn render_scenery(
     let mut rng = rand::thread_rng();
     println!("Rendering scene...");
     let progress_bar = ProgressBar::new(image_height as u64 * image_width as u64);
-    progress_bar.set_style(ProgressStyle::default_bar()
-        .template("[{elapsed_precise}] {wide_bar} {pos}/{len}px, eta {eta} "));
+    progress_bar.set_style(
+        ProgressStyle::default_bar()
+            .template("[{elapsed_precise}] {wide_bar} {pos}/{len}px, eta {eta} "),
+    );
     for j in (0..image_height).rev() {
         for i in 0..image_width {
             let mut color = Vec3::new(0.0, 0.0, 0.0);
@@ -32,7 +35,8 @@ pub fn render_scenery(
                 color = color + ray_color(ray, &scene, &mut rng, max_depth);
             }
             //color.gamma_correct(supersampling_ratio);
-            file.write_pixel(&color, supersampling_ratio);
+            let color = to_color(color, supersampling_ratio);
+            file.write_pixel(&color);
             progress_bar.inc(1);
         }
     }
