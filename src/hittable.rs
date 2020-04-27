@@ -1,11 +1,11 @@
 use crate::material::Material;
 use crate::ray::Ray;
-use crate::vec3::Vec3;
+use crate::vector::Vector;
 use std::rc::Rc;
 
 pub struct HitRecord {
-    pub p: Vec3,
-    pub normal: Vec3,
+    pub p: Vector,
+    pub normal: Vector,
     pub t: f64,
     pub front_face: bool,
     pub material: Option<Rc<dyn Material>>,
@@ -19,15 +19,15 @@ impl HitRecord {
     pub fn empty() -> HitRecord {
         HitRecord {
             t: 0.0,
-            p: Vec3::new(0.0, 0.0, 0.0),
-            normal: Vec3::new(0.0, 0.0, 0.0),
+            p: Vector::new(0.0, 0.0, 0.0),
+            normal: Vector::new(0.0, 0.0, 0.0),
             front_face: false,
             material: None,
         }
     }
 
-    pub fn set_face_normal(&mut self, ray: &Ray, outward_normal: &Vec3) {
-        self.front_face = Vec3::dot(ray.direction(), outward_normal) < 0.0;
+    pub fn set_face_normal(&mut self, ray: &Ray, outward_normal: &Vector) {
+        self.front_face = Vector::dot(ray.direction(), outward_normal) < 0.0;
         self.normal = if self.front_face {
             outward_normal.clone()
         } else {

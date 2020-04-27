@@ -1,7 +1,7 @@
 use crate::hittable::HitRecord;
 use crate::material::Material;
 use crate::ray::Ray;
-use crate::vec3::Vec3;
+use crate::vector::Vector;
 use rand::Rng;
 
 pub struct Dielectric {
@@ -13,15 +13,15 @@ impl Dielectric {
         Dielectric { refraction_index }
     }
 
-    fn refract(uv: &Vec3, n: &Vec3, etai_over_etat: f64) -> Vec3 {
-        let cos_theta = Self::ffmin(Vec3::dot(&-uv, n), 1.0);
+    fn refract(uv: &Vector, n: &Vector, etai_over_etat: f64) -> Vector {
+        let cos_theta = Self::ffmin(Vector::dot(&-uv, n), 1.0);
         let r_out_parallel = etai_over_etat * (uv + cos_theta * n);
         let r_out_perp = -(1.0 - r_out_parallel.length_squared()).sqrt() * n;
         r_out_parallel + r_out_perp
     }
 
-    fn reflect(v: &Vec3, n: &Vec3) -> Vec3 {
-        v - (2.0 * Vec3::dot(v, n) * n)
+    fn reflect(v: &Vector, n: &Vector) -> Vector {
+        v - (2.0 * Vector::dot(v, n) * n)
     }
 
     fn ffmin(a: f64, b: f64) -> f64 {
@@ -40,15 +40,15 @@ impl Dielectric {
 }
 
 impl Material for Dielectric {
-    fn scatter(&self, ray_in: &Ray, hit_record: &HitRecord) -> (bool, Vec3, Ray) {
-        let attenuation = Vec3::new(1.0, 1.0, 1.0);
+    fn scatter(&self, ray_in: &Ray, hit_record: &HitRecord) -> (bool, Vector, Ray) {
+        let attenuation = Vector::new(1.0, 1.0, 1.0);
         let etai_over_etat = if hit_record.front_face {
             1.0 / self.refraction_index
         } else {
             self.refraction_index
         };
         let unit_direction = ray_in.direction().unit_vector();
-        let cos_theta = Self::ffmin(Vec3::dot(&-&unit_direction, &hit_record.normal), 1.0);
+        let cos_theta = Self::ffmin(Vector::dot(&-&unit_direction, &hit_record.normal), 1.0);
         let sin_theta = (1.0 - cos_theta * cos_theta).sqrt();
         let reflect_prob = Self::schlick(cos_theta, etai_over_etat);
         if etai_over_etat * sin_theta > 1.0 || rand::thread_rng().gen::<f64>() < reflect_prob {

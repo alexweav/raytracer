@@ -7,7 +7,7 @@ use crate::file_writer::PpmWriter;
 use crate::hittable::Hittable;
 use crate::ray::Ray;
 use crate::scenery::Scenery;
-use crate::vec3::Vec3;
+use crate::vector::Vector;
 
 pub fn render_scenery(
     scene: Scenery,
@@ -27,7 +27,7 @@ pub fn render_scenery(
     );
     for j in (0..image_height).rev() {
         for i in 0..image_width {
-            let mut color = Vec3::new(0.0, 0.0, 0.0);
+            let mut color = Vector::new(0.0, 0.0, 0.0);
             for _ in 0..supersampling_ratio {
                 let u = (i as f64 + rng.gen::<f64>()) / image_width as f64;
                 let v = (j as f64 + rng.gen::<f64>()) / image_height as f64;
@@ -43,9 +43,9 @@ pub fn render_scenery(
     progress_bar.finish();
 }
 
-fn ray_color(ray: Ray, world: &impl Hittable, rng: &mut impl rand::Rng, depth: i32) -> Vec3 {
+fn ray_color(ray: Ray, world: &impl Hittable, rng: &mut impl rand::Rng, depth: i32) -> Vector {
     if depth <= 0 {
-        return Vec3::new(0.0, 0.0, 0.0);
+        return Vector::new(0.0, 0.0, 0.0);
     }
 
     let (hit, record) = world.hit(&ray, 0.001, std::f64::INFINITY);
@@ -55,11 +55,11 @@ fn ray_color(ray: Ray, world: &impl Hittable, rng: &mut impl rand::Rng, depth: i
         if scatter {
             attenuation * ray_color(scattered, world, rng, depth - 1)
         } else {
-            Vec3::new(0.0, 0.0, 0.0)
+            Vector::new(0.0, 0.0, 0.0)
         }
     } else {
         let unit_direction = ray.direction().unit_vector();
         let t = 0.5 * (unit_direction.y() + 1.0);
-        (1.0 - t) * Vec3::new(1.0, 1.0, 1.0) + (t * Vec3::new(0.5, 0.7, 1.0))
+        (1.0 - t) * Vector::new(1.0, 1.0, 1.0) + (t * Vector::new(0.5, 0.7, 1.0))
     }
 }

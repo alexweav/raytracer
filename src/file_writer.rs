@@ -3,7 +3,7 @@ use std::fs::OpenOptions;
 use std::io::Write;
 use std::path::Path;
 
-use crate::vec3::Vec3;
+use crate::vector::Vector;
 
 pub struct PpmWriter {
     file: File,
@@ -23,7 +23,7 @@ impl PpmWriter {
         PpmWriter { file }
     }
 
-    pub fn write_pixel(&mut self, color: &Vec3) {
+    pub fn write_pixel(&mut self, color: &Vector) {
         let row = format!(
             "{} {} {}\n",
             color.x() as i32,

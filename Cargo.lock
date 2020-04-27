@@ -21,6 +21,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "autocfg"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f8aac770f1885fd7e387acedd76065302551364496e46b3dd00860b2f8359b9d"
+
+[[package]]
 name = "bitflags"
 version = "1.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -82,6 +88,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a357d28ed41a50f9c765dbfe56cbc04a64e53e5fc58ba79fbc34c10ef3df831f"
 
 [[package]]
+name = "float-cmp"
+version = "0.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "da62c4f1b81918835a8c6a484a397775fff5953fe83529afd51b05f5c6a6617d"
+dependencies = [
+ "num-traits",
+]
+
+[[package]]
 name = "getrandom"
 version = "0.1.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -100,6 +115,12 @@ checksum = "8a0d737e0f947a1864e93d33fdef4af8445a00d1ed8dc0c8ddb73139ea6abf15"
 dependencies = [
  "libc",
 ]
+
+[[package]]
+name = "impl_ops"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "90f97a5f38dd3ccfbe7aa80f4a0c00930f21b922c74195be0201c51028f22dcf"
 
 [[package]]
 name = "indicatif"
@@ -124,6 +145,15 @@ name = "libc"
 version = "0.2.69"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "99e85c08494b21a9054e7fe1374a732aeadaff3980b6990b94bfd3a70f690005"
+
+[[package]]
+name = "num-traits"
+version = "0.2.11"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c62be47e61d1842b9170f0fdeec8eba98e60e90e5446449a0545e5152acd7096"
+dependencies = [
+ "autocfg",
+]
 
 [[package]]
 name = "number_prefix"
@@ -183,6 +213,8 @@ name = "raytracing-weekend"
 version = "0.1.0"
 dependencies = [
  "clap",
+ "float-cmp",
+ "impl_ops",
  "indicatif",
  "rand",
 ]

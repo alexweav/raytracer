@@ -2,17 +2,17 @@ use crate::hittable::HitRecord;
 use crate::hittable::Hittable;
 use crate::material::Material;
 use crate::ray::Ray;
-use crate::vec3::Vec3;
+use crate::vector::Vector;
 use std::rc::Rc;
 
 pub struct Sphere {
-    center: Vec3,
+    center: Vector,
     radius: f64,
     material: Rc<dyn Material>,
 }
 
 impl Sphere {
-    pub fn new(center: &Vec3, radius: f64, material: Rc<dyn Material>) -> Sphere {
+    pub fn new(center: &Vector, radius: f64, material: Rc<dyn Material>) -> Sphere {
         Sphere {
             center: center.clone(),
             radius,
@@ -20,7 +20,7 @@ impl Sphere {
         }
     }
 
-    pub fn center(&self) -> &Vec3 {
+    pub fn center(&self) -> &Vector {
         &self.center
     }
 
@@ -33,7 +33,7 @@ impl Hittable for Sphere {
     fn hit(&self, ray: &Ray, t_min: f64, t_max: f64) -> (bool, HitRecord) {
         let center_offset = ray.origin() - self.center();
         let a = ray.direction().length_squared();
-        let half_b = Vec3::dot(&center_offset, ray.direction());
+        let half_b = Vector::dot(&center_offset, ray.direction());
         let c = center_offset.length_squared() - (self.radius() * self.radius());
         let discriminant = (half_b * half_b) - (a * c);
 
@@ -52,7 +52,7 @@ impl Hittable for Sphere {
                 let mut hit_record = HitRecord {
                     t: temp,
                     p: p,
-                    normal: Vec3::new(0.0, 0.0, 0.0),
+                    normal: Vector::new(0.0, 0.0, 0.0),
                     front_face: false,
                     material: Some(self.material.clone()),
                 };
@@ -72,7 +72,7 @@ impl Hittable for Sphere {
                 let mut hit_record = HitRecord {
                     t: temp,
                     p: p,
-                    normal: Vec3::new(0.0, 0.0, 0.0),
+                    normal: Vector::new(0.0, 0.0, 0.0),
                     front_face: false,
                     material: Some(self.material.clone()),
                 };

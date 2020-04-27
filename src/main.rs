@@ -11,9 +11,11 @@ mod ray;
 mod render;
 mod scenery;
 mod sphere;
-mod vec3;
+mod vector;
 
 extern crate clap;
+#[macro_use]
+extern crate impl_ops;
 extern crate rand;
 
 use clap::{App, Arg};
