@@ -11,7 +11,7 @@ mod ray;
 mod render;
 mod scenery;
 mod sphere;
-mod vec3;
+mod vector;
 
 extern crate clap;
 extern crate rand;

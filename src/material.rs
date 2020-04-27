@@ -1,7 +1,7 @@
 use crate::hittable::HitRecord;
 use crate::ray::Ray;
-use crate::vec3::Vec3;
+use crate::vector::Vector;
 
 pub trait Material {
-    fn scatter(&self, ray_in: &Ray, hit_record: &HitRecord) -> (bool, Vec3, Ray);
+    fn scatter(&self, ray_in: &Ray, hit_record: &HitRecord) -> (bool, Vector, Ray);
 }
