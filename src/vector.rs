@@ -101,13 +101,6 @@ impl Vector {
         let len = self.length();
         self / len
     }
-
-    pub fn gamma_correct(&mut self, scale: i32) {
-        let scale = 1.0 / scale as f64;
-        self.0 = (scale * self.0).sqrt();
-        self.1 = (scale * self.1).sqrt();
-        self.2 = (scale * self.2).sqrt();
-    }
 }
 
 impl ops::Add<&Vector> for &Vector {
@@ -243,5 +236,58 @@ impl ops::Div<f64> for Vector {
 
     fn div(self, rhs: f64) -> Vector {
         (1.0 / rhs) * self
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use float_cmp::approx_eq;
+
+    use super::*;
+
+    #[test]
+    fn constructors_give_reasonable_values() {
+        let empty = Vector::empty();
+        assert_eq!(0., empty.x());
+        assert_eq!(0., empty.y());
+        assert_eq!(0., empty.z());
+        let vector = Vector::new(1., 2., 3.);
+        assert_eq!(1., vector.x());
+        assert_eq!(2., vector.y());
+        assert_eq!(3., vector.z());
+    }
+
+    #[test]
+    fn test_vector_dot_product() {
+        let vector = Vector::new(1., 2., 3.);
+        let dot = Vector::dot(&vector, &vector);
+        assert!(approx_eq!(f64, 14., dot));
+    }
+
+    #[test]
+    fn test_vector_length() {
+        let vector = Vector::new(1., 1., 1.);
+        let length = vector.length();
+        assert!(approx_eq!(f64, (3. as f64).sqrt(), length));
+    }
+
+    #[test]
+    fn test_vector_length_squared() {
+        let vector = Vector::new(1., 2., 3.);
+        let length_squared = vector.length_squared();
+        assert!(approx_eq!(f64, 14., length_squared));
+    }
+
+    #[test]
+    fn test_unit_vector_conversion() {
+        let vector = Vector::new(3., 0., 0.);
+        let unit = vector.unit_vector();
+        assert_eq!(1., unit.x());
+        assert_eq!(0., unit.y());
+        assert_eq!(0., unit.z());
+
+        let vector = Vector::new(1., 2., 3.);
+        let unit = vector.unit_vector();
+        assert!(approx_eq!(f64, 1., unit.length()));
     }
 }
