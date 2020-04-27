@@ -14,6 +14,8 @@ mod sphere;
 mod vector;
 
 extern crate clap;
+#[macro_use]
+extern crate impl_ops;
 extern crate rand;
 
 use clap::{App, Arg};

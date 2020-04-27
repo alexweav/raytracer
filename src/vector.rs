@@ -103,141 +103,13 @@ impl Vector {
     }
 }
 
-impl ops::Add<&Vector> for &Vector {
-    type Output = Vector;
-
-    fn add(self, rhs: &Vector) -> Vector {
-        Vector(self.0 + rhs.0, self.1 + rhs.1, self.2 + rhs.2)
-    }
-}
-
-impl ops::Add<Vector> for Vector {
-    type Output = Vector;
-
-    fn add(self, rhs: Vector) -> Vector {
-        Vector(self.0 + rhs.0, self.1 + rhs.1, self.2 + rhs.2)
-    }
-}
-
-impl ops::Add<Vector> for &Vector {
-    type Output = Vector;
-
-    fn add(self, rhs: Vector) -> Vector {
-        Vector(self.0 + rhs.0, self.1 + rhs.1, self.2 + rhs.2)
-    }
-}
-
-impl ops::Add<&Vector> for Vector {
-    type Output = Vector;
-
-    fn add(self, rhs: &Vector) -> Vector {
-        Vector(self.0 + rhs.0, self.1 + rhs.1, self.2 + rhs.2)
-    }
-}
-
-impl ops::Sub<&Vector> for &Vector {
-    type Output = Vector;
-
-    fn sub(self, rhs: &Vector) -> Vector {
-        Vector(self.0 - rhs.0, self.1 - rhs.1, self.2 - rhs.2)
-    }
-}
-
-impl ops::Sub<Vector> for &Vector {
-    type Output = Vector;
-
-    fn sub(self, rhs: Vector) -> Vector {
-        Vector(self.0 - rhs.0, self.1 - rhs.1, self.2 - rhs.2)
-    }
-}
-
-impl ops::Sub<Vector> for Vector {
-    type Output = Vector;
-
-    fn sub(self, rhs: Vector) -> Vector {
-        Vector(self.0 - rhs.0, self.1 - rhs.1, self.2 - rhs.2)
-    }
-}
-
-impl ops::Sub<&Vector> for Vector {
-    type Output = Vector;
-
-    fn sub(self, rhs: &Vector) -> Vector {
-        Vector(self.0 - rhs.0, self.1 - rhs.1, self.2 - rhs.2)
-    }
-}
-
-impl ops::Neg for &Vector {
-    type Output = Vector;
-
-    fn neg(self) -> Vector {
-        Vector(-self.0, -self.1, -self.2)
-    }
-}
-
-impl ops::Neg for Vector {
-    type Output = Vector;
-
-    fn neg(self) -> Vector {
-        Vector(-self.0, -self.1, -self.2)
-    }
-}
-
-impl ops::Mul<Vector> for Vector {
-    type Output = Vector;
-
-    fn mul(self, rhs: Vector) -> Vector {
-        Vector(self.0 * rhs.0, self.1 * rhs.1, self.2 * rhs.2)
-    }
-}
-
-impl ops::Mul<&Vector> for &Vector {
-    type Output = Vector;
-
-    fn mul(self, rhs: &Vector) -> Vector {
-        Vector(self.0 * rhs.0, self.1 * rhs.1, self.2 * rhs.2)
-    }
-}
-
-impl ops::Mul<&Vector> for f64 {
-    type Output = Vector;
-
-    fn mul(self, rhs: &Vector) -> Vector {
-        Vector(self * rhs.0, self * rhs.1, self * rhs.2)
-    }
-}
-
-impl ops::Mul<Vector> for f64 {
-    type Output = Vector;
-
-    fn mul(self, rhs: Vector) -> Vector {
-        Vector(self * rhs.0, self * rhs.1, self * rhs.2)
-    }
-}
-
-impl ops::Mul<f64> for &Vector {
-    type Output = Vector;
-
-    fn mul(self, rhs: f64) -> Vector {
-        rhs * self
-    }
-}
-
-impl ops::Div<f64> for &Vector {
-    type Output = Vector;
-
-    fn div(self, rhs: f64) -> Vector {
-        (1.0 / rhs) * self
-    }
-}
-
-impl ops::Div<f64> for Vector {
-    type Output = Vector;
-
-    fn div(self, rhs: f64) -> Vector {
-        (1.0 / rhs) * self
-    }
-}
+impl_op_ex!(+ |a: &Vector, b: &Vector| -> Vector { Vector(a.0 + b.0, a.1 + b.1, a.2 + b.2) });
+impl_op_ex!(-|a: &Vector, b: &Vector| -> Vector { Vector(a.0 - b.0, a.1 - b.1, a.2 - b.2) });
+impl_op_ex!(-|a: &Vector| -> Vector { Vector(-a.0, -a.1, -a.2) });
+impl_op_ex!(*|a: &Vector, b: &Vector| -> Vector { Vector(a.0 * b.0, a.1 * b.1, a.2 * b.2) });
+impl_op_ex!(*|a: &Vector, b: f64| -> Vector { Vector(a.0 * b, a.1 * b, a.2 * b) });
+impl_op_ex!(*|a: f64, b: &Vector| -> Vector { Vector(a * b.0, a * b.1, a * b.2) });
+impl_op_ex!(/ |a: &Vector, b: f64| -> Vector { (1.0 / b) * a });
 
 #[cfg(test)]
 mod tests {
@@ -289,5 +161,76 @@ mod tests {
         let vector = Vector::new(1., 2., 3.);
         let unit = vector.unit_vector();
         assert!(approx_eq!(f64, 1., unit.length()));
+    }
+
+    #[test]
+    fn test_vector_cross_product() {
+        let vec1 = Vector::new(2., 3., 4.);
+        let vec2 = Vector::new(5., 6., 7.);
+        let cross = Vector::cross(&vec1, &vec2);
+        assert_eq!(-3., cross.x());
+        assert_eq!(6., cross.y());
+        assert_eq!(-3., cross.z());
+    }
+
+    #[test]
+    fn test_vector_add() {
+        let vec1 = Vector::new(2., 3., 4.);
+        let vec2 = Vector::new(5., 6., 7.);
+        let result = vec1 + vec2;
+        assert_eq!(7., result.x());
+        assert_eq!(9., result.y());
+        assert_eq!(11., result.z());
+    }
+
+    #[test]
+    fn test_vector_subtract() {
+        let vec1 = Vector::new(2., 3., 4.);
+        let vec2 = Vector::new(5., 6., 7.);
+        let result = vec1 - vec2;
+        assert_eq!(-3., result.x());
+        assert_eq!(-3., result.y());
+        assert_eq!(-3., result.z());
+    }
+
+    #[test]
+    fn test_vector_negate() {
+        let vec1 = Vector::new(2., 3., 4.);
+        let result = -vec1;
+        assert_eq!(-2., result.x());
+        assert_eq!(-3., result.y());
+        assert_eq!(-4., result.z());
+    }
+
+    #[test]
+    fn test_vector_elemwise_multiply() {
+        let vec1 = Vector::new(2., 3., 4.);
+        let vec2 = Vector::new(5., 6., 7.);
+        let result = vec1 * vec2;
+        assert_eq!(10., result.x());
+        assert_eq!(18., result.y());
+        assert_eq!(28., result.z());
+    }
+
+    #[test]
+    fn test_vector_scalar_multiply() {
+        let vec1 = Vector::new(2., 3., 4.);
+        let result = &vec1 * 2.;
+        assert_eq!(4., result.x());
+        assert_eq!(6., result.y());
+        assert_eq!(8., result.z());
+        let result = 3. * &vec1;
+        assert_eq!(6., result.x());
+        assert_eq!(9., result.y());
+        assert_eq!(12., result.z());
+    }
+
+    #[test]
+    fn test_vector_scalar_divide() {
+        let vec1 = Vector::new(2., 4., 8.);
+        let result = vec1 / 2.;
+        assert_eq!(1., result.x());
+        assert_eq!(2., result.y());
+        assert_eq!(4., result.z());
     }
 }
