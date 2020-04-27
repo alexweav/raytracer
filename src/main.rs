@@ -1,4 +1,5 @@
 mod camera;
+mod color;
 mod dielectric;
 mod environments;
 mod file_writer;
