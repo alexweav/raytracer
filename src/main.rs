@@ -21,7 +21,7 @@ extern crate rand;
 use clap::{App, Arg};
 use std::path::Path;
 
-use crate::io::Ppm;
+use crate::io::Png;
 use crate::render::render_scenery;
 
 fn main() {
@@ -46,7 +46,7 @@ fn main() {
         environment.image.width,
         environment.image.height,
     );*/
-    let mut file = Ppm::new(
+    let mut file = Png::new(
         Path::new(file_location),
         environment.image.width,
         environment.image.height,

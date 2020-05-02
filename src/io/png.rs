@@ -29,8 +29,18 @@ impl PngWriter {
         PngWriter { file }
     }
 
-    fn write_header(stream: &mut impl Write, _: i32, _: i32) -> Result<(), Error> {
-        stream.write_all(&[0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A])
+    fn write_header(stream: &mut impl Write, width: i32, height: i32) -> Result<(), Error> {
+        let signature = [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A];
+        stream.write_all(&signature)?;
+        let w = Self::to_bytes_big_endian(width as u32);
+        let h = Self::to_bytes_big_endian(height as u32);
+        let header = [
+            w[0], w[1], w[2], w[3],
+            h[0], h[1], h[2], h[3],
+            8, 6, 0, 0, 0
+        ];
+        Self::write_chunk(stream, ChunkType::Header, &header)?;
+        Ok(())
     }
 
     fn write_chunk(stream: &mut impl Write, chunk_type: ChunkType, data: &[u8]) -> Result<(), Error> {
