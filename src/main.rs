@@ -2,8 +2,8 @@ mod camera;
 mod color;
 mod dielectric;
 mod environments;
-mod file_writer;
 mod hittable;
+mod io;
 mod lambertian;
 mod material;
 mod metal;
@@ -21,7 +21,7 @@ extern crate rand;
 use clap::{App, Arg};
 use std::path::Path;
 
-use crate::file_writer::PpmWriter;
+use crate::io::Ppm;
 use crate::render::render_scenery;
 
 fn main() {
@@ -39,9 +39,14 @@ fn main() {
         )
         .get_matches();
 
-    let file_location = matches.value_of("output").unwrap_or("output1.ppm");
+    let file_location = matches.value_of("output").unwrap_or("pngtest.png");
     let environment = environments::spheres::get_environment();
-    let mut file = PpmWriter::new(
+    /*let mut file = PpmWriter::new(
+        Path::new(file_location),
+        environment.image.width,
+        environment.image.height,
+    );*/
+    let mut file = Ppm::new(
         Path::new(file_location),
         environment.image.width,
         environment.image.height,
