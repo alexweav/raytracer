@@ -6,13 +6,13 @@ use std::path::Path;
 use crate::io::Image;
 use crate::vector::Vector;
 
-pub struct PpmWriter {
+pub struct Ppm {
     file: File,
 }
 
-impl PpmWriter {
+impl Ppm {
     #[allow(dead_code)]
-    pub fn new(path: &Path, image_width: i32, image_height: i32) -> PpmWriter {
+    pub fn new(path: &Path, image_width: i32, image_height: i32) -> Self {
         let mut file = OpenOptions::new()
             .write(true)
             .truncate(true)
@@ -20,9 +20,9 @@ impl PpmWriter {
             .open(path)
             .unwrap();
 
-        PpmWriter::write_header(&mut file, image_width, image_height).unwrap();
+        Self::write_header(&mut file, image_width, image_height).unwrap();
 
-        PpmWriter { file }
+        Self { file }
     }
 
     fn write_header(stream: &mut impl Write, width: i32, height: i32) -> Result<(), Error> {
@@ -33,7 +33,7 @@ impl PpmWriter {
     }
 }
 
-impl Image for PpmWriter {
+impl Image for Ppm {
     fn write_pixel(&mut self, color: &Vector) {
         let row = format!(
             "{} {} {}\n",
@@ -42,5 +42,38 @@ impl Image for PpmWriter {
             color.z() as i32
         );
         self.file.write_all(row.as_bytes()).unwrap();
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use std::fs;
+
+    use super::*;
+
+    #[test]
+    fn image_file_with_header_created() {
+        let path = Path::new("test.ppm");
+        Ppm::new(path, 10, 10);
+        assert!(path.exists());
+
+        let contents = fs::read_to_string(path).unwrap();
+        assert_eq!("P3\n10 10\n255\n", contents);
+
+        fs::remove_file(path).unwrap();
+    }
+
+    #[test]
+    fn emits_formatted_ppm_pixels() {
+        let path = Path::new("test.ppm");
+        let mut ppm = Ppm::new(path, 10, 10);
+        
+        ppm.write_pixel(&Vector::new(1.0, 2.0, 3.0));
+        ppm.write_pixel(&Vector:: new(128.5, 128.0, 255.5));
+
+        let contents = fs::read_to_string(path).unwrap();
+        assert_eq!("P3\n10 10\n255\n1 2 3\n128 128 255\n", contents);
+
+        fs::remove_file(path).unwrap();
     }
 }

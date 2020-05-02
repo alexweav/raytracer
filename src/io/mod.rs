@@ -4,4 +4,4 @@ mod ppm;
 
 pub use image::Image as Image;
 pub use png::PngWriter as Png;
-pub use ppm::PpmWriter as Ppm;
+pub use ppm::Ppm as Ppm;
