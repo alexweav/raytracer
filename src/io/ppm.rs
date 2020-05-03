@@ -67,9 +67,9 @@ mod tests {
     fn emits_formatted_ppm_pixels() {
         let path = Path::new("test.ppm");
         let mut ppm = Ppm::new(path, 10, 10);
-        
+
         ppm.write_pixel(&Vector::new(1.0, 2.0, 3.0));
-        ppm.write_pixel(&Vector:: new(128.5, 128.0, 255.5));
+        ppm.write_pixel(&Vector::new(128.5, 128.0, 255.5));
 
         let contents = fs::read_to_string(path).unwrap();
         assert_eq!("P3\n10 10\n255\n1 2 3\n128 128 255\n", contents);

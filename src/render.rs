@@ -3,8 +3,8 @@ use rand::Rng;
 
 use crate::camera::Camera;
 use crate::color::to_color;
-use crate::io::Image;
 use crate::hittable::Hittable;
+use crate::io::Image;
 use crate::ray::Ray;
 use crate::scenery::Scenery;
 use crate::vector::Vector;
