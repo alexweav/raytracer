@@ -3,8 +3,8 @@ use rand::Rng;
 
 use crate::camera::Camera;
 use crate::color::to_color;
-use crate::file_writer::PpmWriter;
 use crate::hittable::Hittable;
+use crate::io::Image;
 use crate::ray::Ray;
 use crate::scenery::Scenery;
 use crate::vector::Vector;
@@ -13,7 +13,7 @@ pub fn render_scenery(
     scene: Scenery,
     camera: &Camera,
     image_size: (i32, i32),
-    file: &mut PpmWriter,
+    file: &mut impl Image,
     supersampling_ratio: i32,
 ) {
     let max_depth = 50;

@@ -23,7 +23,7 @@ fn make_image() -> Image {
     Image {
         width: 1200,
         height: 600,
-        supersampling_ratio: 50,
+        supersampling_ratio: 2, //50,
     }
 }
 
