@@ -3,17 +3,22 @@ use std::fs::OpenOptions;
 use std::io::{Error, Write};
 use std::path::Path;
 
+extern crate crc32fast;
+use crc32fast::Hasher;
+
 use crate::io::Image;
 use crate::vector::Vector;
 
 #[allow(dead_code)]
 pub struct PngWriter {
     file: File,
+    data: Vec<u8>,
 }
 
 #[allow(dead_code)]
 enum ChunkType {
     Header,
+    End,
 }
 
 #[allow(dead_code)]
@@ -26,7 +31,10 @@ impl PngWriter {
             .open(path)
             .unwrap();
         PngWriter::write_header(&mut file, width, height).unwrap();
-        PngWriter { file }
+        PngWriter {
+            file,
+            data: Vec::new()
+        }
     }
 
     fn write_header(stream: &mut impl Write, width: i32, height: i32) -> Result<(), Error> {
@@ -46,10 +54,17 @@ impl PngWriter {
     fn write_chunk(stream: &mut impl Write, chunk_type: ChunkType, data: &[u8]) -> Result<(), Error> {
         let chunk_length = data.len() as u32;
         stream.write(&Self::to_bytes_big_endian(chunk_length))?;
-        stream.write(match chunk_type {
-            ChunkType::Header => b"IHDR"
-        })?;
+        let mut crc32 = Hasher::new();
+        let chunk_type = match chunk_type {
+            ChunkType::Header => b"IHDR",
+            ChunkType::End => b"IEND",
+        };
+        crc32.update(chunk_type);
+        stream.write(chunk_type)?;
+        crc32.update(data);
         stream.write(data)?;
+        let checksum = crc32.finalize();
+        stream.write(&Self::to_bytes_big_endian(checksum))?;
         Ok(())
     }
 
@@ -61,5 +76,11 @@ impl PngWriter {
 impl Image for PngWriter {
     fn write_pixel(&mut self, _: &Vector) {
 
+    }
+}
+
+impl Drop for PngWriter {
+    fn drop(&mut self) {
+        Self::write_chunk(&mut self.file, ChunkType::End, &[]).unwrap();
     }
 }
