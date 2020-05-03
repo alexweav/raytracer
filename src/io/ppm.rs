@@ -53,7 +53,7 @@ mod tests {
 
     #[test]
     fn image_file_with_header_created() {
-        let path = Path::new("test.ppm");
+        let path = Path::new("test1.ppm");
         Ppm::new(path, 10, 10);
         assert!(path.exists());
 
@@ -65,7 +65,7 @@ mod tests {
 
     #[test]
     fn emits_formatted_ppm_pixels() {
-        let path = Path::new("test.ppm");
+        let path = Path::new("test2.ppm");
         let mut ppm = Ppm::new(path, 10, 10);
 
         ppm.write_pixel(&Vector::new(1.0, 2.0, 3.0));

@@ -21,8 +21,8 @@ pub fn get_environment() -> Environment {
 
 fn make_image() -> Image {
     Image {
-        width: 100,             //1200,
-        height: 50,             //600,
+        width: 1200,
+        height: 600,
         supersampling_ratio: 2, //50,
     }
 }

@@ -39,13 +39,8 @@ fn main() {
         )
         .get_matches();
 
-    let file_location = matches.value_of("output").unwrap_or("pngtest.png");
+    let file_location = matches.value_of("output").unwrap_or("output.png");
     let environment = environments::spheres::get_environment();
-    /*let mut file = PpmWriter::new(
-        Path::new(file_location),
-        environment.image.width,
-        environment.image.height,
-    );*/
     let mut file = Png::new(
         Path::new(file_location),
         environment.image.width,

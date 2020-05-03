@@ -43,3 +43,30 @@ pub fn compress(data: &[u8]) -> Vec<u8> {
 
     compressed
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn zero_compress_empty_buffer_no_blocks() {
+        let expected = vec![
+            0x78, 0x01, // header
+            0x0, 0x0, 0x0, 0x1, // checksum
+        ];
+        assert_eq!(expected, compress(&[]));
+    }
+
+    #[test]
+    fn zero_compress_simple_buffer() {
+        let expected = vec![
+            0x78, 0x01, // header
+            0x1,  // last chunk
+            0x3, 0x0, // len
+            0xfc, 0xff, // nlen
+            0x1, 0x2, 0x3, // data
+            0x0, 0xd, 0x0, 0x7, // checksum
+        ];
+        assert_eq!(expected, compress(&[1, 2, 3]));
+    }
+}
